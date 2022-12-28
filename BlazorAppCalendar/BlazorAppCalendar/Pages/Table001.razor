@@ -26,13 +26,10 @@
         <colgroup span="7" width="100"></colgroup>
         <tbody>
             <tr align="center">
-                <th>日</th>
-                <th>月</th>
-                <th>火</th>
-                <th>水</th>
-                <th>木</th>
-                <th>金</th>
-                <th>土</th>
+                @if (weekNames != null) foreach (var item in weekNames)
+                    {
+                        <th>@item.Value</th>
+                    }
             </tr>
 
             @for (int i = 0; i < 6; i++)
@@ -54,6 +51,7 @@
 
 @code {
 
+    private Dictionary<string, string> weekNames = new Dictionary<string, string>();
     private Dictionary<string, int> years = new Dictionary<string, int>();
     private Dictionary<string, int> months = new Dictionary<string, int>();
 
@@ -173,6 +171,17 @@
         //    new Fruits { Date = new DateTime(2020, 12, 1), Product="バナナ", Quantity= 100000, Price=200}
         //};
 
+        weekNames = new Dictionary<string, string>
+        {
+            {"日", "日"},
+                {"月", "月"},
+                {"火", "火"},
+                {"水", "水"},
+                 {"木", "木"},
+                  {"金", "金"},
+                   {"土", "土"},
+        };
+
         years = new Dictionary<string, int>
         {
             {"2020", 2020},
@@ -196,7 +205,7 @@
                 {"9", 9},
                 {"10", 10},
                 {"11", 11},
-                {"12", 12}
+                {"12", 12},
         };
     }
 
