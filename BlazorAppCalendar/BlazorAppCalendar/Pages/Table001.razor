@@ -5,6 +5,22 @@
 
 <br />
 
+<select @bind="selectedYear" class="form-select-sm">
+    @if (years != null) foreach (var item in years)
+        {
+            <option value="@item.Key">@item.Value</option>
+        }
+</select>
+
+<select @bind="selectedMonth" class="form-select-sm">
+    @if (months != null) foreach (var item in months)
+        {
+            <option value="@item.Key">@item.Value</option>
+        }
+</select>
+
+<br />
+
 <div>
     <table class="design01">
         <colgroup span="7" width="100"></colgroup>
@@ -21,7 +37,8 @@
 
             @for (int i = 0; i < 6; i++)
             {
-                var days = GetCalendarDays(dayOfWeek, i, year, month);
+                dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
+                var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);
 
                 <tr align="center" valign="top" height="70">
                     @for (int j = 0; j < 7; j++)
@@ -37,8 +54,14 @@
 
 @code {
 
-    int year = 2022;
-    int month = 12;
+    private Dictionary<string, int> years = new Dictionary<string, int>();
+    private Dictionary<string, int> months = new Dictionary<string, int>();
+
+    private int selectedYear;
+    private int selectedMonth;
+
+    @*    int year = 2022;
+    int month = 12;*@
 
     DayOfWeek dayOfWeek;
     int daysInMonth;
@@ -95,8 +118,16 @@
                 break;
         }
 
-        int daysInMonth = DateTime.DaysInMonth(year, month);
-        int daysInPrevMonth = DateTime.DaysInMonth(year, month - 1);
+        int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
+        int daysInPrevMonth;
+        if (selectedMonth == 1)
+        {
+            daysInPrevMonth = DateTime.DaysInMonth(selectedYear - 1, 12);
+        }
+        else
+        {
+            daysInPrevMonth = DateTime.DaysInMonth(selectedYear, selectedMonth - 1);
+        }
 
         List<int> days = new List<int>();
 
@@ -123,12 +154,15 @@
 
     protected override void OnInitialized()
     {
-        dayOfWeek = GetDayOfWeek(year, month, 1);
+        selectedYear = DateTime.Now.Year;
+        selectedMonth = DateTime.Now.Month;
 
-        DateTime startDate = new DateTime(year, month, 1);
+        dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
 
-        int daysInMonth = DateTime.DaysInMonth(year, month);
-        DateTime endDate = new DateTime(year, month, daysInMonth);
+        @*        DateTime startDate = new DateTime(selectedYear, selectedMonth, 1);
+
+        int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
+        DateTime endDate = new DateTime(selectedYear, selectedMonth, daysInMonth);*@
 
         //CalendarList = new List<Calendar>
         //{
@@ -139,6 +173,31 @@
         //    new Fruits { Date = new DateTime(2020, 12, 1), Product="バナナ", Quantity= 100000, Price=200}
         //};
 
+        years = new Dictionary<string, int>
+        {
+            {"2020", 2020},
+                {"2021", 2021},
+                {"2022", 2022},
+                {"2023", 2023},
+                 {"2024", 2024},
+                  {"2025", 2025},
+        };
+
+        months = new Dictionary<string, int>
+        {
+            {"1", 1},
+                {"2", 2},
+                {"3", 3},
+                {"4", 4},
+                {"5", 5},
+                {"6", 6},
+                {"7", 7},
+                {"8", 8},
+                {"9", 9},
+                {"10", 10},
+                {"11", 11},
+                {"12", 12}
+        };
     }
 
     public class Calendar
