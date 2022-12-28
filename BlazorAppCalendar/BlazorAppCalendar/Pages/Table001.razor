@@ -7,8 +7,9 @@
 
 <div>
     <table class="design01">
+        <colgroup span="7" width="100"></colgroup>
         <tbody>
-            <tr>
+            <tr align="center">
                 <th>日</th>
                 <th>月</th>
                 <th>火</th>
@@ -22,14 +23,11 @@
             {
                 var days = GetCalendarDays(dayOfWeek, i, year, month);
 
-                <tr>
-                    <td>@days[0]</td>
-                    <td>@days[1]</td>
-                    <td>@days[2]</td>
-                    <td>@days[3]</td>
-                    <td>@days[4]</td>
-                    <td>@days[5]</td>
-                    <td>@days[6]</td>
+                <tr align="center" valign="top" height="70">
+                    @for (int j = 0; j < 7; j++)
+                    {
+                        <td>@days[j]</td>
+                    }
                 </tr>
             }
 
