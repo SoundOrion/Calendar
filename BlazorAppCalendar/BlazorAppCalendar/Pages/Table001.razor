@@ -1,0 +1,150 @@
+﻿@page "/table001"
+
+<PageTitle>テーブルを作成する</PageTitle>
+<h1>カレンダーを作成する</h1>
+
+<br />
+
+<div>
+    <table class="design01">
+        <tbody>
+            <tr>
+                <th>日</th>
+                <th>月</th>
+                <th>火</th>
+                <th>水</th>
+                <th>木</th>
+                <th>金</th>
+                <th>土</th>
+            </tr>
+
+            @for (int i = 0; i < 6; i++)
+            {
+                var days = GetCalendarDays(dayOfWeek, i, year, month);
+
+                <tr>
+                    <td>@days[0]</td>
+                    <td>@days[1]</td>
+                    <td>@days[2]</td>
+                    <td>@days[3]</td>
+                    <td>@days[4]</td>
+                    <td>@days[5]</td>
+                    <td>@days[6]</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+    int year = 2022;
+    int month = 12;
+
+    DayOfWeek dayOfWeek;
+    int daysInMonth;
+
+    private List<Calendar> CalendarList;
+
+
+    private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
+    {
+        DateTime week = new DateTime(Year, Month, Day);
+        return week.DayOfWeek;
+    }
+
+    private List<int> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
+    {
+        int adjsut = 0;
+
+        switch (dayOfWeek)
+        {
+            case DayOfWeek.Sunday:
+                {
+                    adjsut = 0;
+                }
+                break;
+            case DayOfWeek.Monday:
+                {
+                    adjsut = 1;
+                }
+                break;
+            case DayOfWeek.Tuesday:
+                {
+                    adjsut = 2;
+                }
+                break;
+            case DayOfWeek.Wednesday:
+                {
+                    adjsut = 3;
+                }
+                break;
+            case DayOfWeek.Thursday:
+                {
+                    adjsut = 4;
+                }
+                break;
+            case DayOfWeek.Friday:
+                {
+                    adjsut = 5;
+                }
+                break;
+            case DayOfWeek.Saturday:
+                {
+                    adjsut = 6;
+                }
+                break;
+        }
+
+        int daysInMonth = DateTime.DaysInMonth(year, month);
+        int daysInPrevMonth = DateTime.DaysInMonth(year, month - 1);
+
+        List<int> days = new List<int>();
+
+        for (int i = 0; i < 7; i++)
+        {
+            var day = 7 * rowIndex + (i + 1) - adjsut;
+
+            if (day < 1)
+            {
+                days.Add(daysInPrevMonth + day);
+            }
+            else if (day > daysInMonth)
+            {
+                days.Add(day - daysInMonth);
+            }
+            else
+            {
+                days.Add(day);
+            }
+        }
+
+        return days;
+    }
+
+    protected override void OnInitialized()
+    {
+        dayOfWeek = GetDayOfWeek(year, month, 1);
+
+        DateTime startDate = new DateTime(year, month, 1);
+
+        int daysInMonth = DateTime.DaysInMonth(year, month);
+        DateTime endDate = new DateTime(year, month, daysInMonth);
+
+        //CalendarList = new List<Calendar>
+        //{
+        //    new Fruits { Date = new DateTime(2017, 12, 1), Product="りんご", Quantity= 10000, Price=100},
+        //    new Fruits { Date = new DateTime(2018, 6, 1), Product="みかん", Quantity= 4000, Price=120},
+        //    new Fruits { Date = new DateTime(2019, 12, 1), Product="バナナ", Quantity= 5000, Price=90},
+        //    new Fruits { Date = new DateTime(2019, 6, 1), Product="みかん", Quantity= 40000, Price=150},
+        //    new Fruits { Date = new DateTime(2020, 12, 1), Product="バナナ", Quantity= 100000, Price=200}
+        //};
+
+    }
+
+    public class Calendar
+    {
+        public DateTime Date { get; set; }
+    }
+}
