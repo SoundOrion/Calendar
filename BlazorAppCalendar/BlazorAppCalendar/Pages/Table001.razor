@@ -21,31 +21,93 @@
 
 <br />
 
-<div>
-    <table class="design01">
-        <colgroup span="7" width="100"></colgroup>
-        <tbody>
-            <tr align="center">
+<div class="calendar-wrap">
+    <table class="calendar">
+
+        <colgroup></colgroup>
+
+        <thead>
+            <tr>
                 @if (weekNames != null) foreach (var item in weekNames)
                     {
                         <th>@item.Value</th>
                     }
             </tr>
-
+        </thead>
+        <tbody>
             @for (int i = 0; i < 6; i++)
             {
                 dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
                 var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);
 
-                <tr align="center" valign="top" height="70">
-                    @for (int j = 0; j < 7; j++)
+                <tr>
+                    @if (@days[0].Date.Month != selectedMonth)
                     {
-                        <td>@days[j]</td>
+                        <td class="sun2">@days[0].Date.Day</td>
                     }
+                    else
+                    {
+                        <td class="sun">@days[0].Date.Day</td>
+                    }
+
+                    @if (@days[1].Date.Month != selectedMonth)
+                    {
+                        <td class="notApplicable">@days[1].Date.Day</td>
+                    }
+                    else
+                    {
+                        <td>@days[1].Date.Day</td>
+                    }
+
+                    @if (@days[2].Date.Month != selectedMonth)
+                    {
+                        <td class="notApplicable">@days[2].Date.Day</td>
+                    }
+                    else
+                    {
+                        <td>@days[2].Date.Day</td>
+                    }
+
+                    @if (@days[3].Date.Month != selectedMonth)
+                    {
+                        <td class="notApplicable">@days[3].Date.Day</td>
+                    }
+                    else
+                    {
+                        <td>@days[3].Date.Day</td>
+                    }
+
+                    @if (@days[4].Date.Month != selectedMonth)
+                    {
+                        <td class="notApplicable">@days[4].Date.Day</td>
+                    }
+                    else
+                    {
+                        <td>@days[4].Date.Day</td>
+                    }
+
+                    @if (@days[5].Date.Month != selectedMonth)
+                    {
+                        <td class="notApplicable">@days[5].Date.Day</td>
+                    }
+                    else
+                    {
+                        <td>@days[5].Date.Day</td>
+                    }
+
+                    @if (@days[6].Date.Month != selectedMonth)
+                    {
+                        <td class="sat2">@days[6].Date.Day</td>
+                    }
+                    else
+                    {
+                        <td class="sat">@days[6].Date.Day</td>
+                    }
+
                 </tr>
             }
-
         </tbody>
+
     </table>
 </div>
 
@@ -64,7 +126,7 @@
     DayOfWeek dayOfWeek;
     int daysInMonth;
 
-    private List<Calendar> CalendarList;
+    @*private List<Calendar> CalendarList;*@
 
 
     private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
@@ -73,7 +135,7 @@
         return week.DayOfWeek;
     }
 
-    private List<int> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
+    private List<Calendar> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
     {
         int adjsut = 0;
 
@@ -127,27 +189,48 @@
             daysInPrevMonth = DateTime.DaysInMonth(selectedYear, selectedMonth - 1);
         }
 
-        List<int> days = new List<int>();
+        List<Calendar> calendars = new List<Calendar>();
 
         for (int i = 0; i < 7; i++)
         {
+            var calendar = new Calendar();
+
             var day = 7 * rowIndex + (i + 1) - adjsut;
 
             if (day < 1)
             {
-                days.Add(daysInPrevMonth + day);
+                //前月
+                if (selectedMonth == 1)
+                {
+                    calendar.Date = new DateTime(selectedYear - 1, 12, daysInPrevMonth + day);
+                }
+                else
+                {
+                    calendar.Date = new DateTime(selectedYear, selectedMonth - 1, daysInPrevMonth + day);
+                }
             }
             else if (day > daysInMonth)
             {
-                days.Add(day - daysInMonth);
+                //翌月
+                if (selectedMonth == 12)
+                {
+                    calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
+                }
+                else
+                {
+                    calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
+                }
             }
             else
             {
-                days.Add(day);
+                //当月
+                calendar.Date = new DateTime(selectedYear, selectedMonth, day);
             }
+
+            calendars.Add(calendar);
         }
 
-        return days;
+        return calendars;
     }
 
     protected override void OnInitialized()

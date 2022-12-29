@@ -1,11 +1,59 @@
-﻿.design01 {
-    border: 1px solid gray;
+﻿* {
+    margin: 0;
+    padding: 0;
 }
 
-.design01 th, .design01 td {
-        border: 1px solid gray;
+.calendar-wrap {
+    width: 500px;
+    background: #eee;
+    color: #333;
 }
 
-    .design01 th {
+h1 {
+    line-height: 100px;
+    text-align: center;
+    font-size: 30px;
+}
+
+.calendar {
+    padding: 20px;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/*    .calendar th {
         background-color: aqua;
-    }
+    }*/
+
+th, td {
+    text-align: center;
+    padding: 10px;
+    background-color: #fff;
+    /*border: 1px solid gray;*/
+}
+ 
+td {
+    vertical-align: top;
+    font-weight: bold;
+}
+
+.sun {
+    color: red;
+}
+
+.sat {
+    color: blue;
+}
+
+
+.notApplicable {
+    color: #F2F2F2;
+}
+
+.sun2 {
+    color: #FADBDA;
+}
+
+.sat2 {
+    color: #D3DEF1;
+}
