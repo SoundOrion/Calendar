@@ -21,6 +21,11 @@
 
 <br />
 
+<br />
+<button class="btn btn-primary" @onclick="previous">前月</button>
+<button class="btn btn-primary" @onclick="next">翌月</button>
+<br />
+
 <div class="calendar-wrap">
     <table class="calendar">
 
@@ -50,49 +55,16 @@
                         <td class="sun">@days[0].Date.Day</td>
                     }
 
-                    @if (@days[1].Date.Month != selectedMonth)
+                    @for (int j = 1; j < 6; j++)
                     {
-                        <td class="notApplicable">@days[1].Date.Day</td>
-                    }
-                    else
-                    {
-                        <td>@days[1].Date.Day</td>
-                    }
-
-                    @if (@days[2].Date.Month != selectedMonth)
-                    {
-                        <td class="notApplicable">@days[2].Date.Day</td>
-                    }
-                    else
-                    {
-                        <td>@days[2].Date.Day</td>
-                    }
-
-                    @if (@days[3].Date.Month != selectedMonth)
-                    {
-                        <td class="notApplicable">@days[3].Date.Day</td>
-                    }
-                    else
-                    {
-                        <td>@days[3].Date.Day</td>
-                    }
-
-                    @if (@days[4].Date.Month != selectedMonth)
-                    {
-                        <td class="notApplicable">@days[4].Date.Day</td>
-                    }
-                    else
-                    {
-                        <td>@days[4].Date.Day</td>
-                    }
-
-                    @if (@days[5].Date.Month != selectedMonth)
-                    {
-                        <td class="notApplicable">@days[5].Date.Day</td>
-                    }
-                    else
-                    {
-                        <td>@days[5].Date.Day</td>
+                        @if (@days[j].Date.Month != selectedMonth)
+                        {
+                            <td class="notApplicable">@days[j].Date.Day</td>
+                        }
+                        else
+                        {
+                            <td>@days[j].Date.Day</td>
+                        }
                     }
 
                     @if (@days[6].Date.Month != selectedMonth)
@@ -257,43 +229,55 @@
         weekNames = new Dictionary<string, string>
         {
             {"日", "日"},
-                {"月", "月"},
-                {"火", "火"},
-                {"水", "水"},
-                 {"木", "木"},
-                  {"金", "金"},
-                   {"土", "土"},
+            {"月", "月"},
+            {"火", "火"},
+            {"水", "水"},
+            {"木", "木"},
+            {"金", "金"},
+            {"土", "土"},
         };
 
         years = new Dictionary<string, int>
         {
             {"2020", 2020},
-                {"2021", 2021},
-                {"2022", 2022},
-                {"2023", 2023},
-                 {"2024", 2024},
-                  {"2025", 2025},
+            {"2021", 2021},
+            {"2022", 2022},
+            {"2023", 2023},
+            {"2024", 2024},
+            {"2025", 2025},
         };
 
         months = new Dictionary<string, int>
         {
             {"1", 1},
-                {"2", 2},
-                {"3", 3},
-                {"4", 4},
-                {"5", 5},
-                {"6", 6},
-                {"7", 7},
-                {"8", 8},
-                {"9", 9},
-                {"10", 10},
-                {"11", 11},
-                {"12", 12},
+            {"2", 2},
+            {"3", 3},
+            {"4", 4},
+            {"5", 5},
+            {"6", 6},
+            {"7", 7},
+            {"8", 8},
+            {"9", 9},
+            {"10", 10},
+            {"11", 11},
+            {"12", 12},
         };
     }
 
     public class Calendar
     {
         public DateTime Date { get; set; }
+    }
+
+    private void next()
+    {
+        selectedYear = (selectedMonth == 12) ? selectedYear + 1 : selectedYear;
+        selectedMonth = (selectedMonth == 12) ? 1 : selectedMonth + 1;
+    }
+
+    private void previous()
+    {
+        selectedYear = (selectedMonth == 1) ? selectedYear - 1 : selectedYear;
+        selectedMonth = (selectedMonth == 1) ? 12 : selectedMonth - 1;
     }
 }
