@@ -58,3 +58,7 @@
     border-radius: 4px;
     padding-left: 4px;
 }
+
+.notApplicable {
+    color: #F2F2F2;
+}

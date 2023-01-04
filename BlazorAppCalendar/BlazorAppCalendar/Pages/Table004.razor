@@ -29,7 +29,7 @@
 
 <div class="calendar">
 
-    <div >
+    <div>
         <div class="calendar-weekly">
             @if (weekNames != null) foreach (var item in weekNames)
                 {
@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <div >
+    <div>
         @for (int i = 0; i < 6; i++)
         {
             if (i == 0)
@@ -66,8 +66,8 @@
 
         @for (int i = 0; i < 6; i++)
         {
-@*            var dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
-            var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);*@
+            @*            var dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
+        var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);*@
 
             var days = CalendarDays[i];
 
@@ -86,7 +86,6 @@
                             bool skip = false;
                             if (k == 0)
                             {
-
                             }
                             else
                             {
@@ -328,23 +327,24 @@
                     int cnt = GetStackIndex(i, startDate, startedEvents, calendar);
 
                     Event clone = new Event
-                    {
+                        {
                             Id = e.Id,
                             Name = e.Name,
                             StartDate = e.StartDate,
                             EndDate = e.EndDate,
-                            Color =e.Color,
+                            Color = e.Color,
                             Width = width,
                             StackIndex = cnt,
-                    };
+                        };
 
                     dayEvents.Add(clone);
                     startedEvents.Add(clone);
                 }
-                else if (date.DayOfWeek== DayOfWeek.Sunday)
-                {        
+                else if (date.DayOfWeek == DayOfWeek.Sunday)
+                {
                     var width = GetEventWidth(date, endDate, DayOfWeek.Sunday);
                     int cnt = GetStackIndex(i, date, startedEvents, calendar);
+                    @*int cnt = GetStackIndex(startDate, e);*@
 
                     Event clone = new Event
                         {
@@ -365,6 +365,7 @@
                     //直近の日曜日と比較する
                     startDate = GetNearDate(date, startDate);
 
+                    @*int cnt = GetStackIndex(i, startDate, startedEvents, calendar);*@
                     int cnt = GetStackIndex(startDate, e);
 
                     Event clone = new Event
@@ -383,6 +384,8 @@
 
             }
         }
+
+        dayEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));
 
         return dayEvents;
     }
@@ -468,7 +471,8 @@
 
                 if (date == cal.Date)
                 {
-                    cnt = cal.Events.Where(x => x.Id == eve.Id).Select(x => x.StackIndex).FirstOrDefault();
+                    cnt = cal.Events.Where(x => x.Id == eve.Id)
+                        .Select(x => x.StackIndex).FirstOrDefault();
                 }
             }
         }
@@ -486,11 +490,12 @@
                 new Event { Id = 4, Name =  "海外旅行", StartDate = new DateTime(2023, 1, 19), EndDate = new DateTime(2023, 1, 25), Color = "dimgray"},
                 new Event { Id = 5, Name =  "誕生日1", StartDate = new DateTime(2023, 1, 30), EndDate = new DateTime(2023, 1, 31), Color = "orange"},
                 new Event { Id = 6, Name =  "誕生日2", StartDate = new DateTime(2023, 1, 24), EndDate = new DateTime(2023, 1, 28), Color = "navy"},
-                new Event { Id = 7, Name =  "誕生日3", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "deepskyblue"},
+                new Event { Id = 7, Name =  "誕生日3", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 28), Color = "deepskyblue"},
                 new Event { Id = 8, Name =  "誕生日4", StartDate = new DateTime(2023, 1, 25), EndDate = new DateTime(2023, 1, 29), Color = "teal"},
                 new Event { Id = 9, Name =  "誕生日5", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "red"},
                 new Event { Id = 10, Name =  "誕生日6", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "limegreen"},
                 new Event { Id = 11, Name =  "誕生日7", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "orange"},
+                new Event { Id = 12, Name =  "有給2", StartDate = new DateTime(2023, 1, 20), EndDate = new DateTime(2023, 1, 25), Color = "dimgray"},
             };
 
         EventList.Sort((a, b) => a.StartDate.CompareTo(b.StartDate));
