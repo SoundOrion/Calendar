@@ -365,19 +365,7 @@
                     //直近の日曜日と比較する
                     startDate = GetNearDate(date, startDate);
 
-                    int cnt = 0;
-                    for (int j = 0; j < 6; j++)
-                    {
-                        for (int k = 0; k < 7; k++)
-                        {
-                            var cal = CalendarDays[j][k];
-
-                            if (startDate == cal.Date)
-                            {
-                                cnt = cal.Events.Where(x => x.Id == e.Id).Select(x => x.StackIndex).FirstOrDefault();
-                            }
-                        }
-                    }
+                    int cnt = GetStackIndex(startDate, e);
 
                     Event clone = new Event
                         {
@@ -386,9 +374,9 @@
                             StartDate = startDate,
                             EndDate = e.EndDate,
                             Color = e.Color,
-                            @*Width = width,*@
-                            StackIndex = cnt,
-                        };
+                        @*Width = width,*@
+                        StackIndex = cnt,
+                    };
 
                     startedEvents.Add(clone);
                 }
@@ -466,6 +454,26 @@
 
             ++ret;
         }
+    }
+
+    private int GetStackIndex(DateTime date, Event eve)
+    {
+        int cnt = 0;
+
+        for (int j = 0; j < 6; j++)
+        {
+            for (int k = 0; k < 7; k++)
+            {
+                var cal = CalendarDays[j][k];
+
+                if (date == cal.Date)
+                {
+                    cnt = cal.Events.Where(x => x.Id == eve.Id).Select(x => x.StackIndex).FirstOrDefault();
+                }
+            }
+        }
+
+        return cnt;
     }
 
     public List<Event> GetEvents()
