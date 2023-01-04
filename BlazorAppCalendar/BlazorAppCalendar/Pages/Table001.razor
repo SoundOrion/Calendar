@@ -83,6 +83,34 @@
     </table>
 </div>
 
+<br />
+<br />
+<br />
+
+<div class="calendar-wrap">
+
+    <div>
+        @if (weekNames != null) foreach (var item in weekNames)
+            {
+                @item.Value
+            }
+    </div>
+
+    @for (int i = 0; i < 6; i++)
+    {
+        dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
+        var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);
+
+        <div>
+            @for (int j = 0; j < 7; j++)
+            {
+                @days[j].Date.Day
+            }
+        </div>
+    }
+
+</div>
+
 @code {
 
     private Dictionary<string, string> weekNames = new Dictionary<string, string>();

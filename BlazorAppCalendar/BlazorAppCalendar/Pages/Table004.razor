@@ -1,0 +1,493 @@
+﻿@page "/table004"
+@using BlazorAppCalendar.Data
+
+<PageTitle>https://reffect.co.jp/vue/vue-js-original-calendar</PageTitle>
+<h1>カレンダーを作成する</h1>
+
+<br />
+
+<select @bind="selectedYear" class="form-select-sm">
+    @if (years != null) foreach (var item in years)
+        {
+            <option value="@item.Key">@item.Value</option>
+        }
+</select>
+
+<select @bind="selectedMonth" class="form-select-sm">
+    @if (months != null) foreach (var item in months)
+        {
+            <option value="@item.Key">@item.Value</option>
+        }
+</select>
+
+<br />
+
+<br />
+<button class="btn btn-primary" @onclick="previous">前月</button>
+<button class="btn btn-primary" @onclick="next">翌月</button>
+<br />
+
+<div class="calendar">
+
+    <div >
+        <div class="calendar-weekly">
+            @if (weekNames != null) foreach (var item in weekNames)
+                {
+                    <div class="calendar-youbi">
+                        @item.Value
+                    </div>
+                }
+        </div>
+    </div>
+
+    <div >
+        @for (int i = 0; i < 6; i++)
+        {
+            if (i == 0)
+            {
+                CalendarDays = new List<List<Calendar>>();
+            }
+
+            var dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
+            var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);
+            CalendarDays.Add(days);
+        }
+
+        @for (int i = 0; i < 6; i++)
+        {
+            @for (int j = 0; j < 7; j++)
+            {
+                var calendar = CalendarDays[i][j];
+                calendar.Events = GetDayEvents(calendar);
+            }
+        }
+
+
+
+        @for (int i = 0; i < 6; i++)
+        {
+@*            var dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
+            var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);*@
+
+            var days = CalendarDays[i];
+
+            <div class="calendar-weekly">
+                @for (int j = 0; j < 7; j++)
+                {
+                    <div class="calendar-daily">
+                        @days[j].Date.Day
+
+                        @*@foreach (var eve in days[j].Events)*@
+                        @for (int k = 0; k < days[j].Events.Count; k++)
+                        {
+                            var eve = days[j].Events[k];
+                            int cnt = days[j].Events.Take<Event>(k).Where(x => x.StartDate == eve.StartDate).Count();
+
+                            bool skip = false;
+                            if (k == 0)
+                            {
+
+                            }
+                            else
+                            {
+                                var preeve = days[j].Events[k - 1];
+                                if (eve.StartDate == preeve.StartDate && preeve.StackIndex + 1 == eve.StackIndex)
+                                {
+                                    skip = true;
+                                }
+                            }
+
+                            if (!skip)
+                            {
+                                for (int l = 0; l < eve.StackIndex - cnt; l++)
+                                {
+                                    <div style="height:26px"></div>
+                                }
+                            }
+
+                            @*<div class="calendar-event" style=width:200%;>*@
+                            <div class="calendar-event" style=width:@eve.Width%;background-color:@eve.Color;>
+                                @eve.Name
+                            </div>
+
+                            @*<div style="height:26px"></div>*@
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    private Dictionary<string, string> weekNames = new Dictionary<string, string>();
+    private Dictionary<string, int> years = new Dictionary<string, int>();
+    private Dictionary<string, int> months = new Dictionary<string, int>();
+
+    private int selectedYear;
+    private int selectedMonth;
+
+    private List<Event> eventList;
+
+    private List<List<Calendar>> CalendarDays = new List<List<Calendar>>();
+
+    private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
+    {
+        DateTime week = new DateTime(Year, Month, Day);
+        return week.DayOfWeek;
+    }
+
+    private List<Calendar> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
+    {
+        int adjsut = 0;
+
+        switch (dayOfWeek)
+        {
+            case DayOfWeek.Sunday:
+                {
+                    adjsut = 0;
+                }
+                break;
+            case DayOfWeek.Monday:
+                {
+                    adjsut = 1;
+                }
+                break;
+            case DayOfWeek.Tuesday:
+                {
+                    adjsut = 2;
+                }
+                break;
+            case DayOfWeek.Wednesday:
+                {
+                    adjsut = 3;
+                }
+                break;
+            case DayOfWeek.Thursday:
+                {
+                    adjsut = 4;
+                }
+                break;
+            case DayOfWeek.Friday:
+                {
+                    adjsut = 5;
+                }
+                break;
+            case DayOfWeek.Saturday:
+                {
+                    adjsut = 6;
+                }
+                break;
+        }
+
+        int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
+        int daysInPrevMonth;
+        if (selectedMonth == 1)
+        {
+            daysInPrevMonth = DateTime.DaysInMonth(selectedYear - 1, 12);
+        }
+        else
+        {
+            daysInPrevMonth = DateTime.DaysInMonth(selectedYear, selectedMonth - 1);
+        }
+
+        List<Calendar> calendars = new List<Calendar>();
+
+        for (int i = 0; i < 7; i++)
+        {
+            var calendar = new Calendar();
+
+            var day = 7 * rowIndex + (i + 1) - adjsut;
+
+            if (day < 1)
+            {
+                //前月
+                if (selectedMonth == 1)
+                {
+                    calendar.Date = new DateTime(selectedYear - 1, 12, daysInPrevMonth + day);
+                }
+                else
+                {
+                    calendar.Date = new DateTime(selectedYear, selectedMonth - 1, daysInPrevMonth + day);
+                }
+            }
+            else if (day > daysInMonth)
+            {
+                //翌月
+                if (selectedMonth == 12)
+                {
+                    calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
+                }
+                else
+                {
+                    calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
+                }
+            }
+            else
+            {
+                //当月
+                calendar.Date = new DateTime(selectedYear, selectedMonth, day);
+            }
+
+            //イベントスケジュール
+            @*calendar.Events = GetDayEvents(calendar, rowIndex, i);*@
+
+            calendars.Add(calendar);
+        }
+
+        return calendars;
+    }
+
+    protected override void OnInitialized()
+    {
+        selectedYear = DateTime.Now.Year;
+        selectedMonth = DateTime.Now.Month;
+
+        @*dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);*@
+
+        weekNames = new Dictionary<string, string>
+        {
+            {"日", "日"},
+            {"月", "月"},
+            {"火", "火"},
+            {"水", "水"},
+            {"木", "木"},
+            {"金", "金"},
+            {"土", "土"},
+        };
+
+        years = new Dictionary<string, int>
+        {
+            {"2020", 2020},
+            {"2021", 2021},
+            {"2022", 2022},
+            {"2023", 2023},
+            {"2024", 2024},
+            {"2025", 2025},
+        };
+
+        months = new Dictionary<string, int>
+        {
+            {"1", 1},
+            {"2", 2},
+            {"3", 3},
+            {"4", 4},
+            {"5", 5},
+            {"6", 6},
+            {"7", 7},
+            {"8", 8},
+            {"9", 9},
+            {"10", 10},
+            {"11", 11},
+            {"12", 12},
+        };
+
+        eventList = GetEvents();
+    }
+
+    public class Calendar
+    {
+        public DateTime Date { get; set; }
+
+        public List<Event> Events { get; set; }
+    }
+
+    private void next()
+    {
+        selectedYear = (selectedMonth == 12) ? selectedYear + 1 : selectedYear;
+        selectedMonth = (selectedMonth == 12) ? 1 : selectedMonth + 1;
+    }
+
+    private void previous()
+    {
+        selectedYear = (selectedMonth == 1) ? selectedYear - 1 : selectedYear;
+        selectedMonth = (selectedMonth == 1) ? 12 : selectedMonth - 1;
+    }
+
+    private List<Event> GetDayEvents(Calendar calendar)
+    {
+        var date = calendar.Date;
+
+        List<Event> dayEvents = new List<Event>();
+        List<Event> startedEvents = new List<Event>();
+
+        for (int i = 0; i < eventList.Count; i++)
+        {
+            var e = eventList[i];
+
+            var startDate = e.StartDate;
+            var endDate = e.EndDate;
+
+            if (startDate <= date && endDate >= date)
+            {
+                if (startDate == date)
+                {
+                    var dayOfWeek = startDate.DayOfWeek;
+                    var width = GetEventWidth(startDate, endDate, dayOfWeek);
+                    int cnt = GetStackIndex(i, startDate, startedEvents, calendar);
+
+                    Event clone = new Event
+                    {
+                            Id = e.Id,
+                            Name = e.Name,
+                            StartDate = e.StartDate,
+                            EndDate = e.EndDate,
+                            Color =e.Color,
+                            Width = width,
+                            StackIndex = cnt,
+                    };
+
+                    dayEvents.Add(clone);
+                    startedEvents.Add(clone);
+                }
+                else if (date.DayOfWeek== DayOfWeek.Sunday)
+                {        
+                    var width = GetEventWidth(date, endDate, DayOfWeek.Sunday);
+                    int cnt = GetStackIndex(i, date, startedEvents, calendar);
+
+                    Event clone = new Event
+                        {
+                            Id = e.Id,
+                            Name = e.Name,
+                            StartDate = date,
+                            EndDate = e.EndDate,
+                            Color = e.Color,
+                            Width = width,
+                            StackIndex = cnt,
+                        };
+
+                    dayEvents.Add(clone);
+                    startedEvents.Add(clone);
+                }
+                else
+                {
+                    //直近の日曜日と比較する
+                    startDate = GetNearDate(date, startDate);
+
+                    int cnt = 0;
+                    for (int j = 0; j < 6; j++)
+                    {
+                        for (int k = 0; k < 7; k++)
+                        {
+                            var cal = CalendarDays[j][k];
+
+                            if (startDate == cal.Date)
+                            {
+                                cnt = cal.Events.Where(x => x.Id == e.Id).Select(x => x.StackIndex).FirstOrDefault();
+                            }
+                        }
+                    }
+
+                    Event clone = new Event
+                        {
+                            Id = e.Id,
+                            Name = e.Name,
+                            StartDate = startDate,
+                            EndDate = e.EndDate,
+                            Color = e.Color,
+                            @*Width = width,*@
+                            StackIndex = cnt,
+                        };
+
+                    startedEvents.Add(clone);
+                }
+
+            }
+        }
+
+        return dayEvents;
+    }
+
+    /// <summary>
+    ///width:95%にしとく
+    /// </summary>
+    /// <param name="startDate"></param>
+    /// <param name="endDate"></param>
+    /// <param name="dayOfWeek"></param>
+    /// <returns></returns>
+    private double GetEventWidth(DateTime startDate, DateTime endDate, DayOfWeek dayOfWeek)
+    {
+        var betweenDays = (endDate - startDate).TotalDays;
+        if (betweenDays > 6 - (int)dayOfWeek)
+        {
+            return (double)(6 - (int)dayOfWeek) * 100 + 95;
+        }
+        else
+        {
+            return betweenDays * 100 + 95;
+        }
+    }
+
+    private DateTime GetNearDate(DateTime date, DateTime startDate)
+    {
+        //直近の日曜日と比較して日付取得
+        var nearDate = date;
+        while (nearDate > startDate)
+        {
+            if (nearDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                break;
+            }
+            nearDate = nearDate.AddDays(-1);
+        }
+        return nearDate;
+    }
+
+    private int GetStackIndex(int index, DateTime date, List<Event> startedEvents, Calendar calendar)
+    {
+        HashSet<int> indexList = new HashSet<int>();
+
+        if (calendar.Events != null)
+        {
+            for (int k = 0; k < calendar.Events.Count; k++)
+            {
+                var eve = calendar.Events[k];
+                indexList.Add(eve.StackIndex);
+            }
+        }
+
+        if (startedEvents != null)
+        {
+            for (int k = 0; k < startedEvents.Count; k++)
+            {
+                var eve = startedEvents[k];
+                indexList.Add(eve.StackIndex);
+            }
+        }
+
+        int ret = 0;
+        while (true)
+        {
+            if (!indexList.Contains(ret))
+            {
+                return ret;
+            }
+
+            ++ret;
+        }
+    }
+
+    public List<Event> GetEvents()
+    {
+        List<Event> EventList = new List<Event>
+            {
+                new Event { Id = 1, Name =  "ミーティング", StartDate = new DateTime(2023, 1, 19), EndDate = new DateTime(2023, 1, 20), Color = "blue"},
+                new Event { Id = 2, Name =  "会議", StartDate = new DateTime(2023, 1, 11), EndDate = new DateTime(2023, 1, 14), Color = "limegreen"},
+                new Event { Id = 3, Name =  "有給", StartDate = new DateTime(2022, 12, 9), EndDate = new DateTime(2023, 1, 13), Color = "deepskyblue"},
+                new Event { Id = 4, Name =  "海外旅行", StartDate = new DateTime(2023, 1, 19), EndDate = new DateTime(2023, 1, 25), Color = "dimgray"},
+                new Event { Id = 5, Name =  "誕生日1", StartDate = new DateTime(2023, 1, 30), EndDate = new DateTime(2023, 1, 31), Color = "orange"},
+                new Event { Id = 6, Name =  "誕生日2", StartDate = new DateTime(2023, 1, 24), EndDate = new DateTime(2023, 1, 28), Color = "navy"},
+                new Event { Id = 7, Name =  "誕生日3", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "deepskyblue"},
+                new Event { Id = 8, Name =  "誕生日4", StartDate = new DateTime(2023, 1, 25), EndDate = new DateTime(2023, 1, 29), Color = "teal"},
+                new Event { Id = 9, Name =  "誕生日5", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "red"},
+                new Event { Id = 10, Name =  "誕生日6", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "limegreen"},
+                new Event { Id = 11, Name =  "誕生日7", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "orange"},
+            };
+
+        EventList.Sort((a, b) => a.StartDate.CompareTo(b.StartDate));
+
+        return EventList;
+    }
+
+}
