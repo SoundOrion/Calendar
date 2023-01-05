@@ -37,6 +37,17 @@
     text-align: center;
 }
 
+.calendar-today {
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    background-color: cornflowerblue;
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    margin: auto; /* 中央寄せ */
+}
+
 .calendar-youbi {
     flex: 1;
     border-right: 1px solid #E0E0E0;

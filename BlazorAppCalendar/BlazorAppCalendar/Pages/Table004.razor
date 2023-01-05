@@ -72,7 +72,16 @@
                 @for (int j = 0; j < 7; j++)
                 {
                     <div class="calendar-daily">
-                        @days[j].Date.Day
+                        @if (DateTime.Compare(days[j].Date.Date, DateTime.Now.Date) == 0)
+                        {
+                            <div class="calendar-today">
+                                @days[j].Date.Day
+                            </div>
+                        }
+                        else
+                        {
+                            @days[j].Date.Day
+                        }
 
                         @foreach (var eve in days[j].Events)
                         {
