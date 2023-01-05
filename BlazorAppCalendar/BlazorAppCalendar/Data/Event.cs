@@ -4,8 +4,6 @@
     {
         public int StackIndex { get; set; }
 
-        public int SkipCount { get; set; }
-
         public int Id { get; set; }
 
         public string? Name { get; set; }

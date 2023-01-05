@@ -66,9 +66,6 @@
 
         @for (int i = 0; i < 6; i++)
         {
-            @*            var dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
-        var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);*@
-
             var days = CalendarDays[i];
 
             <div class="calendar-weekly">
@@ -79,17 +76,17 @@
 
                         @foreach (var eve in days[j].Events)
                         {
-                            for (int k = 0; k < eve.SkipCount; k++)
+                            if (eve.Width < -1000)
                             {
                                 <div style="height:26px"></div>
                             }
-
-                            @*<div class="calendar-event" style=width:200%;>*@
-                            <div class="calendar-event" style=width:@eve.Width%;background-color:@eve.Color;>
-                                @eve.Name
-                            </div>
-
-                            @*<div style="height:26px"></div>*@
+                            else
+                            {
+                                @*<div class="calendar-event" style=width:200%;>*@
+                                <div class="calendar-event" style=width:@eve.Width%;background-color:@eve.Color;>
+                                    @eve.Name
+                                </div>
+                            }
                         }
                     </div>
                 }
@@ -306,6 +303,8 @@
                     var width = GetEventWidth(startDate, endDate, dayOfWeek);
                     int cnt = GetStackIndex(i, startDate, startedEvents, calendar);
 
+                    @*e.StackIndex = cnt;*@
+
                     Event clone = new Event
                         {
                             Id = e.Id,
@@ -355,37 +354,18 @@
                             StartDate = startDate,
                             EndDate = e.EndDate,
                             Color = e.Color,
-                        @*Width = width,*@
+                            Width = -9999,  //dummy
                             StackIndex = cnt,
                     };
-
+                    dayEvents.Add(clone);
                     startedEvents.Add(clone);
                 }
 
             }
         }
 
-        startedEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));
+        @*startedEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));*@
         dayEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));
-
-        for (int i = 0; i < dayEvents.Count; i++)
-        {
-            var eve = dayEvents[i];
-
-            if (dayEvents.Count == 1)
-            {
-                eve.SkipCount = startedEvents.Count - 1;
-            }
-            else if (i == 0)
-            {
-                eve.SkipCount = startedEvents.Count(x => x.StackIndex < eve.StackIndex);
-            }
-            else
-            {
-                var preeve = dayEvents[i - 1];
-                eve.SkipCount = startedEvents.Count(x => preeve.StackIndex < x.StackIndex  && x.StackIndex < eve.StackIndex);
-            }
-        }
 
         return dayEvents;
     }
@@ -457,6 +437,15 @@
 
             ++ret;
         }
+
+@*        if (indexList.Count > 0)
+        {
+            return indexList.Max() + 1;
+        }
+        else
+        {
+            return 0;
+        }*@
     }
 
     private int GetStackIndex(DateTime date, Event eve)
@@ -494,7 +483,7 @@
                 new Event { Id = 8, Name =  "誕生日4", StartDate = new DateTime(2023, 1, 25), EndDate = new DateTime(2023, 1, 29), Color = "teal"},
                 new Event { Id = 9, Name =  "誕生日5", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "red"},
                 new Event { Id = 10, Name =  "誕生日6", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "limegreen"},
-                new Event { Id = 11, Name =  "誕生日7", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "orange"},
+                new Event { Id = 11, Name =  "誕生日7", StartDate = new DateTime(2023, 2, 1), EndDate = new DateTime(2023, 2, 1), Color = "orange"},
                 new Event { Id = 12, Name =  "有給2", StartDate = new DateTime(2023, 1, 20), EndDate = new DateTime(2023, 1, 25), Color = "dimgray"},
             };
 
