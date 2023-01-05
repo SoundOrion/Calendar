@@ -31,7 +31,7 @@
 
     <div>
         <div class="calendar-weekly">
-            @if (weekNames != null) foreach (var item in weekNames)
+            @if (dayOfWeekNames != null) foreach (var item in dayOfWeekNames)
                 {
                     <div class="calendar-youbi">
                         @item.Value
@@ -106,7 +106,7 @@
 
 @code {
 
-    private Dictionary<string, string> weekNames = new Dictionary<string, string>();
+    private Dictionary<string, string> dayOfWeekNames = new Dictionary<string, string>();
     private Dictionary<string, int> years = new Dictionary<string, int>();
     private Dictionary<string, int> months = new Dictionary<string, int>();
 
@@ -167,15 +167,7 @@
         }
 
         int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
-        int daysInPrevMonth;
-        if (selectedMonth == 1)
-        {
-            daysInPrevMonth = DateTime.DaysInMonth(selectedYear - 1, 12);
-        }
-        else
-        {
-            daysInPrevMonth = DateTime.DaysInMonth(selectedYear, selectedMonth - 1);
-        }
+        int daysInPrevMonth = GetDaysInPrevMonth(selectedYear, selectedMonth);
 
         List<Calendar> calendars = new List<Calendar>();
 
@@ -224,6 +216,18 @@
         return calendars;
     }
 
+    private int GetDaysInPrevMonth(int year, int month)
+    {
+        if (month == 1)
+        {
+            return DateTime.DaysInMonth(year - 1, 12);
+        }
+        else
+        {
+            return DateTime.DaysInMonth(year, month - 1);
+        }
+    }
+
     protected override void OnInitialized()
     {
         selectedYear = DateTime.Now.Year;
@@ -231,7 +235,7 @@
 
         @*dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);*@
 
-        weekNames = new Dictionary<string, string>
+        dayOfWeekNames = new Dictionary<string, string>
         {
             {"日", "日"},
             {"月", "月"},
