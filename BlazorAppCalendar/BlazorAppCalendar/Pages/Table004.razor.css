@@ -16,6 +16,7 @@
     max-width: 900px;
     border-top: 1px solid #E0E0E0;
     font-size: 0.8em;
+    -webkit-print-color-adjust: exact;
 }
 
 .calendar-weekly {
