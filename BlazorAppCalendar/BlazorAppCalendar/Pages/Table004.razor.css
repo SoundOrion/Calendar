@@ -59,6 +59,18 @@
     padding-left: 4px;
 }
 
+    .calendar-event-stripes {
+        color: white;
+        margin-bottom: 1px;
+        height: 25px;
+        line-height: 25px;
+        position: relative;
+        z-index: 1;
+        border-radius: 4px;
+        padding-left: 4px;
+        background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255, 255, 255, 0.1) 5px, rgba(255, 255, 255, 0.1) 12px);
+    }
+
 .notApplicable {
     color: #F2F2F2;
 }
