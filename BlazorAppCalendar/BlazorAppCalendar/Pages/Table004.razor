@@ -365,14 +365,18 @@
             }
         }
 
-        @*startedEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));*@
+        startedEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));
         dayEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));
 
         for (int i = 0; i < dayEvents.Count; i++)
         {
             var eve = dayEvents[i];
 
-            if (i == 0)
+            if (dayEvents.Count == 1)
+            {
+                eve.SkipCount = startedEvents.Count - 1;
+            }
+            else if (i == 0)
             {
                 eve.SkipCount = startedEvents.Count(x => x.StackIndex < eve.StackIndex);
             }
