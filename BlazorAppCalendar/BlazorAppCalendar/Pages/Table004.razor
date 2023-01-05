@@ -77,31 +77,11 @@
                     <div class="calendar-daily">
                         @days[j].Date.Day
 
-                        @*@foreach (var eve in days[j].Events)*@
-                        @for (int k = 0; k < days[j].Events.Count; k++)
+                        @foreach (var eve in days[j].Events)
                         {
-                            var eve = days[j].Events[k];
-                            int cnt = days[j].Events.Take<Event>(k).Where(x => x.StartDate == eve.StartDate).Count();
-
-                            bool skip = false;
-                            if (k == 0)
+                            for (int k = 0; k < eve.SkipCount; k++)
                             {
-                            }
-                            else
-                            {
-                                var preeve = days[j].Events[k - 1];
-                                if (eve.StartDate == preeve.StartDate && preeve.StackIndex + 1 == eve.StackIndex)
-                                {
-                                    skip = true;
-                                }
-                            }
-
-                            if (!skip)
-                            {
-                                for (int l = 0; l < eve.StackIndex - cnt; l++)
-                                {
-                                    <div style="height:26px"></div>
-                                }
+                                <div style="height:26px"></div>
                             }
 
                             @*<div class="calendar-event" style=width:200%;>*@
@@ -376,7 +356,7 @@
                             EndDate = e.EndDate,
                             Color = e.Color,
                         @*Width = width,*@
-                        StackIndex = cnt,
+                            StackIndex = cnt,
                     };
 
                     startedEvents.Add(clone);
@@ -385,7 +365,23 @@
             }
         }
 
+        @*startedEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));*@
         dayEvents.Sort((a, b) => a.StackIndex.CompareTo(b.StackIndex));
+
+        for (int i = 0; i < dayEvents.Count; i++)
+        {
+            var eve = dayEvents[i];
+
+            if (i == 0)
+            {
+                eve.SkipCount = startedEvents.Count(x => x.StackIndex < eve.StackIndex);
+            }
+            else
+            {
+                var preeve = dayEvents[i - 1];
+                eve.SkipCount = startedEvents.Count(x => preeve.StackIndex < x.StackIndex  && x.StackIndex < eve.StackIndex);
+            }
+        }
 
         return dayEvents;
     }
@@ -489,8 +485,8 @@
                 new Event { Id = 3, Name =  "有給", StartDate = new DateTime(2022, 12, 9), EndDate = new DateTime(2023, 1, 13), Color = "deepskyblue"},
                 new Event { Id = 4, Name =  "海外旅行", StartDate = new DateTime(2023, 1, 19), EndDate = new DateTime(2023, 1, 25), Color = "dimgray"},
                 new Event { Id = 5, Name =  "誕生日1", StartDate = new DateTime(2023, 1, 30), EndDate = new DateTime(2023, 1, 31), Color = "orange"},
-                new Event { Id = 6, Name =  "誕生日2", StartDate = new DateTime(2023, 1, 24), EndDate = new DateTime(2023, 1, 28), Color = "navy"},
-                new Event { Id = 7, Name =  "誕生日3", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 28), Color = "deepskyblue"},
+                new Event { Id = 6, Name =  "誕生日2", StartDate = new DateTime(2023, 1, 24), EndDate = new DateTime(2023, 2, 28), Color = "navy"},
+                new Event { Id = 7, Name =  "誕生日3", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 3, 28), Color = "deepskyblue"},
                 new Event { Id = 8, Name =  "誕生日4", StartDate = new DateTime(2023, 1, 25), EndDate = new DateTime(2023, 1, 29), Color = "teal"},
                 new Event { Id = 9, Name =  "誕生日5", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "red"},
                 new Event { Id = 10, Name =  "誕生日6", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "limegreen"},
