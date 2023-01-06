@@ -93,7 +93,7 @@
                             {
                                 @*<div class="calendar-event" style=width:200%;>*@
                                 <div class="calendar-event-stripes" style=width:@eve.Width%;background-color:@eve.Color;>
-                                    <img src="/icn-seisho-karen.png" width="20" height="20">
+                                    @*<img src="/icn-seisho-karen.png" width="20" height="20">*@
                                     @eve.Name
                                 </div>
                             }
@@ -512,6 +512,11 @@
                 new Event { Id = 10, Name =  "誕生日6", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "#0B8043"},
                 new Event { Id = 11, Name =  "誕生日7", StartDate = new DateTime(2023, 2, 1), EndDate = new DateTime(2023, 2, 1), Color = "#D50000"},
                 new Event { Id = 12, Name =  "有給2", StartDate = new DateTime(2023, 1, 20), EndDate = new DateTime(2023, 1, 25), Color = "#cd74e6"},
+
+                new Event { Id = -1, Name =  "元日", StartDate = new DateTime(2023, 1, 1), EndDate = new DateTime(2023, 1, 1), Color = "#009688"},
+                new Event { Id = -2, Name =  "休日 元日", StartDate = new DateTime(2023, 1, 2), EndDate = new DateTime(2023, 1, 2), Color = "#009688"},
+                new Event { Id = -3, Name =  "成人の日", StartDate = new DateTime(2023, 1, 9), EndDate = new DateTime(2023, 1, 9), Color = "#009688"},
+                new Event { Id = -4, Name =  "建国記念の日", StartDate = new DateTime(2023, 2, 11), EndDate = new DateTime(2023, 2, 11), Color = "#009688"},
             };
 
         EventList.Sort((a, b) => a.StartDate.CompareTo(b.StartDate));
