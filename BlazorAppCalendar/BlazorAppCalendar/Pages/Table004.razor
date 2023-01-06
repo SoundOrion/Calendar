@@ -425,18 +425,16 @@
 
         if (calendar.Events != null)
         {
-            for (int k = 0; k < calendar.Events.Count; k++)
+            foreach (var eve in calendar.Events)
             {
-                var eve = calendar.Events[k];
                 indexList.Add(eve.StackIndex);
             }
         }
 
         if (startedEvents != null)
         {
-            for (int k = 0; k < startedEvents.Count; k++)
+            foreach (var eve in startedEvents)
             {
-                var eve = startedEvents[k];
                 indexList.Add(eve.StackIndex);
             }
         }
@@ -448,29 +446,19 @@
             {
                 return ret;
             }
-
             ++ret;
         }
-
-@*        if (indexList.Count > 0)
-        {
-            return indexList.Max() + 1;
-        }
-        else
-        {
-            return 0;
-        }*@
     }
 
     private int GetStackIndex(DateTime date, Event eve)
     {
         int cnt = 0;
 
-        for (int j = 0; j < 6; j++)
+        for (int i = 0; i < 6; i++)
         {
-            for (int k = 0; k < 7; k++)
+            for (int j = 0; j < 7; j++)
             {
-                var cal = CalendarDays[j][k];
+                var cal = CalendarDays[i][j];
 
                 if (date == cal.Date)
                 {
@@ -482,15 +470,6 @@
 
         return cnt;
     }
-
-
-
-
-
-
-
-
-
 
 
 
