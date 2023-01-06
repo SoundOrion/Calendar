@@ -1,7 +1,7 @@
 ﻿@page "/table004"
 @using BlazorAppCalendar.Data
 
-<PageTitle>https://reffect.co.jp/vue/vue-js-original-calendar</PageTitle>
+<PageTitle>Monthly</PageTitle>
 <h1>カレンダーを作成する</h1>
 
 <br />
@@ -126,47 +126,7 @@
 
     private List<Calendar> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
     {
-        int adjsut = 0;
-
-        switch (dayOfWeek)
-        {
-            case DayOfWeek.Sunday:
-                {
-                    adjsut = 0;
-                }
-                break;
-            case DayOfWeek.Monday:
-                {
-                    adjsut = 1;
-                }
-                break;
-            case DayOfWeek.Tuesday:
-                {
-                    adjsut = 2;
-                }
-                break;
-            case DayOfWeek.Wednesday:
-                {
-                    adjsut = 3;
-                }
-                break;
-            case DayOfWeek.Thursday:
-                {
-                    adjsut = 4;
-                }
-                break;
-            case DayOfWeek.Friday:
-                {
-                    adjsut = 5;
-                }
-                break;
-            case DayOfWeek.Saturday:
-                {
-                    adjsut = 6;
-                }
-                break;
-        }
-
+        int adjsut = (int)dayOfWeek;//GetDayAdjust(dayOfWeek);
         int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
         int daysInPrevMonth = GetDaysInPrevMonth(selectedYear, selectedMonth);
 
@@ -215,6 +175,52 @@
         }
 
         return calendars;
+    }
+
+    private int GetDayAdjust(DayOfWeek dayOfWeek)
+    {
+        int adjsut = 0;
+
+        switch (dayOfWeek)
+        {
+            case DayOfWeek.Sunday:
+                {
+                    adjsut = 0;
+                }
+                break;
+            case DayOfWeek.Monday:
+                {
+                    adjsut = 1;
+                }
+                break;
+            case DayOfWeek.Tuesday:
+                {
+                    adjsut = 2;
+                }
+                break;
+            case DayOfWeek.Wednesday:
+                {
+                    adjsut = 3;
+                }
+                break;
+            case DayOfWeek.Thursday:
+                {
+                    adjsut = 4;
+                }
+                break;
+            case DayOfWeek.Friday:
+                {
+                    adjsut = 5;
+                }
+                break;
+            case DayOfWeek.Saturday:
+                {
+                    adjsut = 6;
+                }
+                break;
+        }
+
+        return adjsut;
     }
 
     private int GetDaysInPrevMonth(int year, int month)
@@ -370,7 +376,7 @@
                             Color = e.Color,
                             Width = -9999,  //dummy
                             StackIndex = cnt,
-                    };
+                        };
                     dayEvents.Add(clone);
                     startedEvents.Add(clone);
                 }
