@@ -118,6 +118,11 @@
 
     private List<List<Calendar>> CalendarDays = new List<List<Calendar>>();
 
+    /// <summary>
+    /// Start Sunday Or Monday etc ??
+    /// </summary>
+    private DayOfWeek OriginDayOfWeek = DayOfWeek.Sunday;
+
     private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
     {
         DateTime week = new DateTime(Year, Month, Day);
@@ -126,7 +131,7 @@
 
     private List<Calendar> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
     {
-        int adjsut = (int)dayOfWeek;//GetDayAdjust(dayOfWeek);
+        int adjsut = GetDayAdjust(dayOfWeek);
         int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
         int daysInPrevMonth = GetDaysInPrevMonth(selectedYear, selectedMonth);
 
@@ -179,45 +184,11 @@
 
     private int GetDayAdjust(DayOfWeek dayOfWeek)
     {
-        int adjsut = 0;
+        int adjsut = (int)dayOfWeek - (int)OriginDayOfWeek;
 
-        switch (dayOfWeek)
+        if (adjsut < 0)
         {
-            case DayOfWeek.Sunday:
-                {
-                    adjsut = 0;
-                }
-                break;
-            case DayOfWeek.Monday:
-                {
-                    adjsut = 1;
-                }
-                break;
-            case DayOfWeek.Tuesday:
-                {
-                    adjsut = 2;
-                }
-                break;
-            case DayOfWeek.Wednesday:
-                {
-                    adjsut = 3;
-                }
-                break;
-            case DayOfWeek.Thursday:
-                {
-                    adjsut = 4;
-                }
-                break;
-            case DayOfWeek.Friday:
-                {
-                    adjsut = 5;
-                }
-                break;
-            case DayOfWeek.Saturday:
-                {
-                    adjsut = 6;
-                }
-                break;
+            adjsut += 7;
         }
 
         return adjsut;
@@ -252,6 +223,20 @@
             {"Fri", "金"},
             {"Sat", "土"},
         };
+
+        if (OriginDayOfWeek == DayOfWeek.Monday)
+        {
+            dayOfWeekNames = new Dictionary<string, string>
+        {
+            {"Mon", "月"},
+            {"Tue", "火"},
+            {"Wed", "水"},
+            {"Thu", "木"},
+            {"Fri", "金"},
+            {"Sat", "土"},
+            {"Sun", "日"},
+        };
+        }
 
         years = new Dictionary<string, int>
         {
@@ -323,8 +308,6 @@
                     var width = GetEventWidth(startDate, endDate, dayOfWeek);
                     int cnt = GetStackIndex(i, startDate, startedEvents, calendar);
 
-                    @*e.StackIndex = cnt;*@
-
                     Event clone = new Event
                         {
                             Id = e.Id,
@@ -339,9 +322,9 @@
                     dayEvents.Add(clone);
                     startedEvents.Add(clone);
                 }
-                else if (date.DayOfWeek == DayOfWeek.Sunday)
+                else if (date.DayOfWeek == OriginDayOfWeek)
                 {
-                    var width = GetEventWidth(date, endDate, DayOfWeek.Sunday);
+                    var width = GetEventWidth(date, endDate, OriginDayOfWeek);
                     int cnt = GetStackIndex(i, date, startedEvents, calendar);
                     @*int cnt = GetStackIndex(startDate, e);*@
 
@@ -400,9 +383,9 @@
     private double GetEventWidth(DateTime startDate, DateTime endDate, DayOfWeek dayOfWeek)
     {
         var betweenDays = (endDate - startDate).TotalDays;
-        if (betweenDays > 6 - (int)dayOfWeek)
+        if (betweenDays > 6 - GetDayAdjust(dayOfWeek))
         {
-            return (double)(6 - (int)dayOfWeek) * 100 + 95;
+            return (double)(6 - GetDayAdjust(dayOfWeek)) * 100 + 95;
         }
         else
         {
@@ -412,11 +395,11 @@
 
     private DateTime GetNearDate(DateTime date, DateTime startDate)
     {
-        //直近の日曜日と比較して日付取得
+        //直近の日曜日（月曜日）と比較して日付取得
         var nearDate = date;
         while (nearDate > startDate)
         {
-            if (nearDate.DayOfWeek == DayOfWeek.Sunday)
+            if (nearDate.DayOfWeek == OriginDayOfWeek)
             {
                 break;
             }
