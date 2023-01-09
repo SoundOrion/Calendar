@@ -74,13 +74,29 @@
                     <div class="calendar-daily">
                         @if (DateTime.Compare(days[j].Date.Date, DateTime.Now.Date) == 0)
                         {
-                            <div class="calendar-today">
-                                @days[j].Date.Day
-                            </div>
+                            @if (days[j].Date.Day == 1)
+                            {
+                                <div class="calendar-today-first">
+                                    @days[j].Date.ToString("M月d日")
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="calendar-today">
+                                    @days[j].Date.Day
+                                </div>
+                            }
                         }
                         else
                         {
-                            @days[j].Date.Day
+                            @if (days[j].Date.Day == 1)
+                            {
+                                @days[j].Date.ToString("M月d日")
+                            }
+                            else
+                            {
+                                @days[j].Date.Day
+                            }
                         }
 
                         @foreach (var eve in days[j].Events)
@@ -250,7 +266,7 @@
 
         months = new Dictionary<string, int>
         {
-            {"Jan", 1},
+@*            {"Jan", 1},
             {"Feb", 2},
             {"Mar", 3},
             {"Apr", 4},
@@ -261,7 +277,19 @@
             {"Sep", 9},
             {"Oct", 10},
             {"Nov", 11},
-            {"Dec", 12},
+            {"Dec", 12},*@
+            {"1", 1},
+            {"2", 2},
+            {"3", 3},
+            {"4", 4},
+            {"5", 5},
+            {"6", 6},
+            {"7", 7},
+            {"8", 8},
+            {"9", 9},
+            {"10", 10},
+            {"11", 11},
+            {"12", 12},
         };
 
         eventList = GetEvents();
@@ -476,7 +504,7 @@
                 new Event { Id = 6, Name =  "誕生日2", StartDate = new DateTime(2023, 1, 24), EndDate = new DateTime(2023, 2, 28), Color = "#F4511E"},
                 new Event { Id = 7, Name =  "誕生日3", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 3, 28), Color = "#039BE5"},
                 new Event { Id = 8, Name =  "誕生日4", StartDate = new DateTime(2023, 1, 25), EndDate = new DateTime(2023, 1, 29), Color = "#616161"},
-                new Event { Id = 9, Name =  "誕生日5", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "#3F51B5"},
+                new Event { Id = 9, Name =  "（タイトルなし）", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "#3F51B5"},
                 new Event { Id = 10, Name =  "誕生日6", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "#0B8043"},
                 new Event { Id = 11, Name =  "誕生日7", StartDate = new DateTime(2023, 2, 1), EndDate = new DateTime(2023, 2, 1), Color = "#D50000"},
                 new Event { Id = 12, Name =  "有給2", StartDate = new DateTime(2023, 1, 20), EndDate = new DateTime(2023, 1, 25), Color = "#cd74e6"},
