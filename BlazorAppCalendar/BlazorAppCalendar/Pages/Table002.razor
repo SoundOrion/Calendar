@@ -8,14 +8,14 @@
 <select @bind="selectedYear" class="form-select-sm">
     @if (years != null) foreach (var item in years)
         {
-            <option value="@item.Key">@item.Value</option>
+            <option value="@item.Value">@item.Key</option>
         }
 </select>
 
 <select @bind="selectedMonth" class="form-select-sm">
     @if (months != null) foreach (var item in months)
         {
-            <option value="@item.Key">@item.Value</option>
+            <option value="@item.Value">@item.Key</option>
         }
 </select>
 
