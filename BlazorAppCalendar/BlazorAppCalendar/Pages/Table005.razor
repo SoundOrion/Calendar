@@ -1,8 +1,8 @@
-﻿@page "/table004"
+﻿@page "/table005"
 @using BlazorAppCalendar.Data
 
 <PageTitle>Monthly</PageTitle>
-<h1>カレンダーを作成する</h1>
+<h1>カレンダーを作成する（1か月分もしくは2か月分まとめて表示可能）</h1>
 
 <br />
 
@@ -15,6 +15,13 @@
 
 <select @bind="selectedMonth" class="form-select-sm">
     @if (months != null) foreach (var item in months)
+        {
+            <option value="@item.Value">@item.Key</option>
+        }
+</select>
+
+<select @bind="WeekNumber" class="form-select-sm">
+    @if (monthCounts != null) foreach (var item in monthCounts)
         {
             <option value="@item.Value">@item.Key</option>
         }
@@ -136,6 +143,8 @@
     private Dictionary<string, int> years = new Dictionary<string, int>();
     private Dictionary<string, int> months = new Dictionary<string, int>();
 
+    private Dictionary<int, int> monthCounts = new Dictionary<int, int>();
+
     private int selectedYear;
     private int selectedMonth;
 
@@ -151,7 +160,7 @@
     /// <summary>
     /// Monthly Calendar need 6 weeks
     /// </summary>
-    private readonly int WeekNumber = 6;
+    private int WeekNumber = 6;
 
     private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
     {
@@ -164,6 +173,7 @@
         int adjsut = GetDayAdjust(dayOfWeek);
         int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
         int daysInPrevMonth = GetDaysInPrevMonth(selectedYear, selectedMonth);
+        int daysInNextMonth = GetDaysInNextMonth(selectedYear, selectedMonth);
 
         List<Calendar> calendars = new List<Calendar>();
 
@@ -187,14 +197,46 @@
             }
             else if (day > daysInMonth)
             {
-                //翌月
-                if (selectedMonth == 12)
+                //翌月(翌々月 etc)
+                if (WeekNumber != 6)
                 {
-                    calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
+                    if (daysInNextMonth < day - daysInMonth)
+                    {
+                        if (selectedMonth == 12)
+                        {
+                            calendar.Date = new DateTime(selectedYear + 1, 2, day - daysInMonth - daysInNextMonth);
+                        }
+                        else if (selectedMonth == 11)
+                        {
+                            calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth - daysInNextMonth);
+                        }
+                        else
+                        {
+                            calendar.Date = new DateTime(selectedYear, selectedMonth + 2, day - daysInMonth - daysInNextMonth);
+                        }
+                    }
+                    else
+                    {
+                        if (selectedMonth == 12)
+                        {
+                            calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
+                        }
+                        else
+                        {
+                            calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
+                        }
+                    }
                 }
                 else
                 {
-                    calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
+                    if (selectedMonth == 12)
+                    {
+                        calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
+                    }
+                    else
+                    {
+                        calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
+                    }
                 }
             }
             else
@@ -233,6 +275,18 @@
         else
         {
             return DateTime.DaysInMonth(year, month - 1);
+        }
+    }
+
+    private int GetDaysInNextMonth(int year, int month)
+    {
+        if (month == 12)
+        {
+            return DateTime.DaysInMonth(year + 1, 1);
+        }
+        else
+        {
+            return DateTime.DaysInMonth(year, month + 1);
         }
     }
 
@@ -280,18 +334,24 @@
 
         months = new Dictionary<string, int>
         {
-            {"1", 1},
-            {"2", 2},
-            {"3", 3},
-            {"4", 4},
-            {"5", 5},
-            {"6", 6},
-            {"7", 7},
-            {"8", 8},
-            {"9", 9},
-            {"10", 10},
-            {"11", 11},
-            {"12", 12},
+            {"Jan", 1},
+            {"Feb", 2},
+            {"Mar", 3},
+            {"Apr", 4},
+            {"May", 5},
+            {"Jun", 6},
+            {"Jul", 7},
+            {"Aug", 8},
+            {"Sep", 9},
+            {"Oct", 10},
+            {"Nov", 11},
+            {"Dec", 12},
+        };
+
+        monthCounts = new Dictionary<int, int>
+        {
+            {1, 6}, //1Month needs 6week
+            {2, 10}, //2Month needs 10week
         };
 
         eventList = GetEvents();
