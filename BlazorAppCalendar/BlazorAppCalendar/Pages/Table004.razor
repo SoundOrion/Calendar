@@ -107,11 +107,20 @@
                             }
                             else
                             {
-                                @*<div class="calendar-event" style=width:200%;>*@
-                                <div class="calendar-event-stripes" style=width:@eve.Width%;background-color:@eve.Color;>
-                                    @*<img src="/icn-seisho-karen.png" width="20" height="20">*@
-                                    @eve.Name
-                                </div>
+                                @*<div class="calendar-event" style=wid)th:200%;>*@
+                                if (string.IsNullOrEmpty(eve.Avatar))
+                                {
+                                    <div class="calendar-event-stripes" style=width:@eve.Width%;background-color:@eve.Color;>
+                                        @eve.Name
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="calendar-event-stripes" style=width:@eve.Width%;background-color:@eve.Color;>
+                                        <img src=@eve.Avatar width="20" height="20">
+                                        @eve.Name
+                                    </div>
+                                }
                             }
                         }
                     </div>
@@ -345,6 +354,7 @@
                             Color = e.Color,
                             Width = width,
                             StackIndex = cnt,
+                            Avatar = e.Avatar,
                         };
 
                     dayEvents.Add(clone);
@@ -365,6 +375,7 @@
                             Color = e.Color,
                             Width = width,
                             StackIndex = cnt,
+                            Avatar = e.Avatar,
                         };
 
                     dayEvents.Add(clone);
@@ -504,7 +515,7 @@
                 new Event { Id = 6, Name =  "誕生日2", StartDate = new DateTime(2023, 1, 24), EndDate = new DateTime(2023, 2, 28), Color = "#F4511E"},
                 new Event { Id = 7, Name =  "誕生日3", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 3, 28), Color = "#039BE5"},
                 new Event { Id = 8, Name =  "誕生日4", StartDate = new DateTime(2023, 1, 25), EndDate = new DateTime(2023, 1, 29), Color = "#616161"},
-                new Event { Id = 9, Name =  "（タイトルなし）", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "#3F51B5"},
+                new Event { Id = 9, Name =  "（タイトルなし）", StartDate = new DateTime(2023, 1, 21), EndDate = new DateTime(2023, 1, 31), Color = "#3F51B5", Avatar="/icn-seisho-karen.png"},
                 new Event { Id = 10, Name =  "誕生日6", StartDate = new DateTime(2023, 1, 31), EndDate = new DateTime(2023, 1, 31), Color = "#0B8043"},
                 new Event { Id = 11, Name =  "誕生日7", StartDate = new DateTime(2023, 2, 1), EndDate = new DateTime(2023, 2, 1), Color = "#D50000"},
                 new Event { Id = 12, Name =  "有給2", StartDate = new DateTime(2023, 1, 20), EndDate = new DateTime(2023, 1, 25), Color = "#cd74e6"},

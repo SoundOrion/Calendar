@@ -15,5 +15,7 @@
         public string? Color { get; set; }
 
         public double Width { get; set; }
+
+        public string? Avatar { get; set; }
     }
 }
