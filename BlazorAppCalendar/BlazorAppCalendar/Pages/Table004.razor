@@ -48,8 +48,7 @@
                 CalendarDays = new List<List<Calendar>>();
             }
 
-            var dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
-            var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);
+            var days = GetCalendarDays(i, selectedYear, selectedMonth);
             CalendarDays.Add(days);
         }
 
@@ -153,18 +152,12 @@
     /// </summary>
     private readonly int WeekNumber = 6;
 
-    private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
+    private List<Calendar> GetCalendarDays(int rowIndex, int Year, int Month)
     {
-        DateTime week = new DateTime(Year, Month, Day);
-        return week.DayOfWeek;
-    }
-
-    private List<Calendar> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
-    {
-        int adjsut = GetDayAdjust(dayOfWeek);
-        List<Calendar> calendars = new List<Calendar>();
-
         var originDate = new DateTime(selectedYear, selectedMonth, 1);
+        int adjsut = GetDayAdjust(originDate.DayOfWeek);
+
+        List<Calendar> calendars = new List<Calendar>();
 
         for (int i = 0; i < 7; i++)
         {
@@ -187,6 +180,12 @@
         }
 
         return adjsut;
+    }
+
+    private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
+    {
+        DateTime week = new DateTime(Year, Month, Day);
+        return week.DayOfWeek;
     }
 
     private int GetDaysInPrevMonth(int year, int month)
