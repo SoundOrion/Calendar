@@ -171,83 +171,15 @@
     private List<Calendar> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
     {
         int adjsut = GetDayAdjust(dayOfWeek);
-        int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
-        int daysInPrevMonth = GetDaysInPrevMonth(selectedYear, selectedMonth);
-        int daysInNextMonth = GetDaysInNextMonth(selectedYear, selectedMonth);
-
         List<Calendar> calendars = new List<Calendar>();
+
+        var originDate = new DateTime(selectedYear, selectedMonth, 1);
 
         for (int i = 0; i < 7; i++)
         {
             var calendar = new Calendar();
-
-            var day = 7 * rowIndex + (i + 1) - adjsut;
-
-            if (day < 1)
-            {
-                //前月
-                if (selectedMonth == 1)
-                {
-                    calendar.Date = new DateTime(selectedYear - 1, 12, daysInPrevMonth + day);
-                }
-                else
-                {
-                    calendar.Date = new DateTime(selectedYear, selectedMonth - 1, daysInPrevMonth + day);
-                }
-            }
-            else if (day > daysInMonth)
-            {
-                //翌月(翌々月 etc)
-                if (WeekNumber != 6)
-                {
-                    if (daysInNextMonth < day - daysInMonth)
-                    {
-                        if (selectedMonth == 12)
-                        {
-                            calendar.Date = new DateTime(selectedYear + 1, 2, day - daysInMonth - daysInNextMonth);
-                        }
-                        else if (selectedMonth == 11)
-                        {
-                            calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth - daysInNextMonth);
-                        }
-                        else
-                        {
-                            calendar.Date = new DateTime(selectedYear, selectedMonth + 2, day - daysInMonth - daysInNextMonth);
-                        }
-                    }
-                    else
-                    {
-                        if (selectedMonth == 12)
-                        {
-                            calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
-                        }
-                        else
-                        {
-                            calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
-                        }
-                    }
-                }
-                else
-                {
-                    if (selectedMonth == 12)
-                    {
-                        calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
-                    }
-                    else
-                    {
-                        calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
-                    }
-                }
-            }
-            else
-            {
-                //当月
-                calendar.Date = new DateTime(selectedYear, selectedMonth, day);
-            }
-
-            //イベントスケジュール
-            @*calendar.Events = GetDayEvents(calendar, rowIndex, i);*@
-
+            var addDay = (7 * rowIndex) + i - adjsut;
+            calendar.Date = originDate.AddDays(addDay);
             calendars.Add(calendar);
         }
 
@@ -352,6 +284,7 @@
         {
             {1, 6}, //1Month needs 6week
             {2, 10}, //2Month needs 10week
+            {3, 15}, //3Month needs 14,5week
         };
 
         eventList = GetEvents();
