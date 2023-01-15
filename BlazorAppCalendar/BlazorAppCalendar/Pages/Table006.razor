@@ -29,7 +29,13 @@
 <div style="max-width:900px;border-top:5px solid red;">
 
     <div>
+@*        <div style="border-right:5px solid maroon;">a
+        </div>*@
+
         <div style="display:flex ;border-left:5px solid green">
+
+            <div style="flex:1;min-height:125px; border-right:5px solid maroon; border-bottom:5px solid maroon">
+            </div>
 
             @if (weekNames != null) foreach (var item in weekNames)
                 {
@@ -42,12 +48,19 @@
     </div>
 
     <div>
+@*        <div style="border-right:5px solid maroon;">a
+        </div>*@
+
         @for (int i = 0; i < 1; i++)
         {
             dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
             var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);
 
             <div style="display:flex ;border-left:5px solid navy">
+
+                <div style="flex:1;min-height:125px; border-right:5px solid maroon; border-bottom:5px solid maroon">
+                </div>
+
                 @for (int j = 0; j < 7; j++)
                 {
                     <div style="flex:1;min-height:125px; border-right:5px solid aqua; border-bottom:5px solid aqua">
@@ -63,8 +76,8 @@
         {
             <div style="display:flex ;border-left:5px solid purple">
 
-                <div style="display:flex ;border-right:5px solid maroon;">
-                    @i
+                <div style="flex:1;min-height:125px; border-right:5px solid maroon; border-bottom:5px solid maroon">
+                   @i
                 </div>
 
                 @for (int j = 0; j < 7; j++)
