@@ -1,0 +1,298 @@
+﻿@page "/table008"
+
+<PageTitle>Weekly Calendar</PageTitle>
+<h1>週替わりカレンダーを作成する</h1>
+
+<br />
+
+<select @bind="selectedYear" class="form-select-sm">
+    @if (years != null) foreach (var item in years)
+        {
+            <option value="@item.Value">@item.Key</option>
+        }
+</select>
+
+<select @bind="selectedMonth" class="form-select-sm">
+    @if (months != null) foreach (var item in months)
+        {
+            <option value="@item.Value">@item.Key</option>
+        }
+</select>
+
+<br />
+
+<br />
+<button class="btn btn-primary" @onclick="previous">前月</button>
+<button class="btn btn-primary" @onclick="next">翌月</button>
+<br />
+
+<div style="max-width:900px;">
+
+    <div>
+
+        <div style="display:flex;">
+
+            <div class="calendar-weekly">
+            </div>
+
+            @if (weekNames != null) foreach (var item in weekNames)
+                {
+                    <div class="calendar-youbi">
+                        @item.Value
+                    </div>
+                }
+
+        </div>
+    </div>
+
+    <div>
+        @*        <div style="border-right:5px solid maroon;">a
+        </div>*@
+
+        @for (int i = 0; i < 1; i++)
+        {
+            dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
+            var days = GetCalendarDays(dayOfWeek, i, selectedYear, selectedMonth);
+
+            <div style="display:flex;">
+
+                <div class="calendar-weekly">
+                </div>
+
+                @for (int j = 0; j < 7; j++)
+                {
+                    <div class="calendar-daily">
+                        @days[j].Date.Day
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <div>
+        @for (int i = 0; i < 24; i++)
+        {
+            <div style="display:flex;">
+
+                <div class="calendar-weekly-2">
+                    @string.Concat(i.ToString(),":00")
+                </div>
+
+                @for (int j = 0; j < 7; j++)
+                {
+                    <div class="calendar-daily">
+
+                        @if(i == 12)
+                        {
+                        <div class="calendar-event-stripes" style=height:200%;background-color:red;>
+                        </div>
+                        }
+
+
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    private Dictionary<string, string> weekNames = new Dictionary<string, string>();
+    private Dictionary<string, int> years = new Dictionary<string, int>();
+    private Dictionary<string, int> months = new Dictionary<string, int>();
+
+    private int selectedYear;
+    private int selectedMonth;
+
+    DayOfWeek dayOfWeek;
+    int daysInMonth;
+
+    private DayOfWeek GetDayOfWeek(int Year, int Month, int Day)
+    {
+        DateTime week = new DateTime(Year, Month, Day);
+        return week.DayOfWeek;
+    }
+
+    private List<Calendar> GetCalendarDays(DayOfWeek dayOfWeek, int rowIndex, int Year, int Month)
+    {
+        int adjsut = 0;
+
+        switch (dayOfWeek)
+        {
+            case DayOfWeek.Sunday:
+                {
+                    adjsut = 0;
+                }
+                break;
+            case DayOfWeek.Monday:
+                {
+                    adjsut = 1;
+                }
+                break;
+            case DayOfWeek.Tuesday:
+                {
+                    adjsut = 2;
+                }
+                break;
+            case DayOfWeek.Wednesday:
+                {
+                    adjsut = 3;
+                }
+                break;
+            case DayOfWeek.Thursday:
+                {
+                    adjsut = 4;
+                }
+                break;
+            case DayOfWeek.Friday:
+                {
+                    adjsut = 5;
+                }
+                break;
+            case DayOfWeek.Saturday:
+                {
+                    adjsut = 6;
+                }
+                break;
+        }
+
+        int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
+        int daysInPrevMonth;
+        if (selectedMonth == 1)
+        {
+            daysInPrevMonth = DateTime.DaysInMonth(selectedYear - 1, 12);
+        }
+        else
+        {
+            daysInPrevMonth = DateTime.DaysInMonth(selectedYear, selectedMonth - 1);
+        }
+
+        List<Calendar> calendars = new List<Calendar>();
+
+        for (int i = 0; i < 7; i++)
+        {
+            var calendar = new Calendar();
+
+            var day = 7 * rowIndex + (i + 1) - adjsut;
+
+            if (day < 1)
+            {
+                //前月
+                if (selectedMonth == 1)
+                {
+                    calendar.Date = new DateTime(selectedYear - 1, 12, daysInPrevMonth + day);
+                }
+                else
+                {
+                    calendar.Date = new DateTime(selectedYear, selectedMonth - 1, daysInPrevMonth + day);
+                }
+            }
+            else if (day > daysInMonth)
+            {
+                //翌月
+                if (selectedMonth == 12)
+                {
+                    calendar.Date = new DateTime(selectedYear + 1, 1, day - daysInMonth);
+                }
+                else
+                {
+                    calendar.Date = new DateTime(selectedYear, selectedMonth + 1, day - daysInMonth);
+                }
+            }
+            else
+            {
+                //当月
+                calendar.Date = new DateTime(selectedYear, selectedMonth, day);
+            }
+
+            calendars.Add(calendar);
+        }
+
+        return calendars;
+    }
+
+    protected override void OnInitialized()
+    {
+        selectedYear = DateTime.Now.Year;
+        selectedMonth = DateTime.Now.Month;
+
+        dayOfWeek = GetDayOfWeek(selectedYear, selectedMonth, 1);
+
+        weekNames = new Dictionary<string, string>
+        {
+            {"日", "日"},
+            {"月", "月"},
+            {"火", "火"},
+            {"水", "水"},
+            {"木", "木"},
+            {"金", "金"},
+            {"土", "土"},
+        };
+
+        years = new Dictionary<string, int>
+        {
+            {"2020", 2020},
+            {"2021", 2021},
+            {"2022", 2022},
+            {"2023", 2023},
+            {"2024", 2024},
+            {"2025", 2025},
+        };
+
+        months = new Dictionary<string, int>
+        {
+            {"1", 1},
+            {"2", 2},
+            {"3", 3},
+            {"4", 4},
+            {"5", 5},
+            {"6", 6},
+            {"7", 7},
+            {"8", 8},
+            {"9", 9},
+            {"10", 10},
+            {"11", 11},
+            {"12", 12},
+        };
+    }
+
+    public class Calendar
+    {
+        public DateTime Date { get; set; }
+    }
+
+    private void next()
+    {
+        selectedYear = (selectedMonth == 12) ? selectedYear + 1 : selectedYear;
+        selectedMonth = (selectedMonth == 12) ? 1 : selectedMonth + 1;
+    }
+
+    private void previous()
+    {
+        selectedYear = (selectedMonth == 1) ? selectedYear - 1 : selectedYear;
+        selectedMonth = (selectedMonth == 1) ? 12 : selectedMonth - 1;
+    }
+}
+
+@*        events:[
+  { id: 1, name: "ミーティング", start: "2021-01-01", end:"2021-01-01", color:"blue"},
+  { id: 2, name: "イベント", start: "2021-01-02", end:"2021-01-03", color:"limegreen"},
+  { id: 3, name: "会議", start: "2021-01-06", end:"2021-01-06", color:"deepskyblue"},
+  { id: 4, name: "有給", start: "2021-01-08", end:"2021-01-08", color:"dimgray"},
+  { id: 5, name: "海外旅行", start: "2021-01-08", end:"2021-01-11", color:"navy"},
+  { id: 6, name: "誕生日", start: "2021-01-16", end:"2021-01-16", color:"orange"},
+  { id: 7, name: "イベント", start: "2021-01-12", end:"2021-01-15", color:"limegreen"},
+  { id: 8, name: "出張", start: "2021-01-12", end:"2021-01-13", color:"teal"},
+  { id: 9, name: "客先訪問", start: "2021-01-14", end:"2021-01-14", color:"red"},
+  { id: 10, name: "パーティ", start: "2021-01-15", end:"2021-01-15", color:"royalblue"},
+  { id: 12, name: "ミーティング", start: "2021-01-18", end:"2021-01-19", color:"blue"},
+  { id: 13, name: "イベント", start: "2021-01-21", end:"2021-01-21", color:"limegreen"},
+  { id: 14, name: "有給", start: "2021-01-20", end:"2021-01-20", color:"dimgray"},
+  { id: 15, name: "イベント", start: "2021-01-25", end:"2021-01-28", color:"limegreen"},
+  { id: 16, name: "会議", start: "2021-01-21", end:"2021-01-21", color:"deepskyblue"},
+  { id: 17, name: "旅行", start: "2021-01-23", end:"2021-01-24", color:"navy"},
+  { id: 18, name: "ミーティング", start: "2021-01-28", end:"2021-01-28", color:"blue"},
+  { id: 19, name: "会議", start: "2021-01-12", end:"2021-01-12", color:"deepskyblue"},
+  { id: 20, name: "誕生日", start: "2021-01-30", end:"2021-01-30", color:"orange"},
+]*@
